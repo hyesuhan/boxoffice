@@ -59,5 +59,16 @@ services:
       - eureka-server
       - postgres-db
 
+  order-service:
+    build: ./order-service
+    container_name: boxoffice-order-service
+    ports:
+      - "8084:8084"
+    env_file:
+      - ./.env
+    depends_on:
+      - eureka-server
+      - postgres-db
+
 volumes:
   postgres_data:
