@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 public enum OrderDomainErrorCode implements ErrorCode {
   INVALID_COMPANY_ID(HttpStatus.BAD_REQUEST, "ORDER_DOMAIN_001", "업체 ID가 올바르지 않습니다."),
   INVALID_ORDER_PRODUCT(HttpStatus.BAD_REQUEST, "ORDER_DOMAIN_002", "상품명/가격/수량이 형식에 맞지 않습니다."),
-  INVALID_PRODUCT_ID(HttpStatus.BAD_REQUEST, "ORDER_DOMAIN_003", "상품 ID가 올바르지 않습니다.")
+  INVALID_PRODUCT_ID(HttpStatus.BAD_REQUEST, "ORDER_DOMAIN_003", "상품 ID가 올바르지 않습니다."),
+  EMPTY_ORDER_PRODUCT(HttpStatus.BAD_REQUEST, "ORDER_DOMAIN_004", "주문 상품내역이 없습니다.")
   ;
 
   private final HttpStatus httpStatus;

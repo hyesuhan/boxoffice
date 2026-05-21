@@ -106,4 +106,14 @@ public class GlobalExceptionHandler {
                         CommonErrorCode.INTERNAL_SERVER_ERROR.getCode()
                 ));
     }
+
+    @ExceptionHandler(ArithmeticException.class)
+    public ResponseEntity<ApiResponse<Void>> handleArithemetic(ArithmeticException e) {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ApiResponse.error(
+                HttpStatus.BAD_REQUEST.value(),
+                "가능한 처리 금액 범위를 초과했습니다."
+            ));
+    }
 }

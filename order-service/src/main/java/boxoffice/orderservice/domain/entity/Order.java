@@ -13,14 +13,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_orders")
@@ -48,37 +52,57 @@ public class Order extends BaseEntity {
   @Embedded
   private AddressVO addressVo;
 
-  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+      fetch = FetchType.LAZY
+  )
+  @JoinColumn(name = "order_id", nullable = false)
   private List<OrderProduct> orderProducts = new ArrayList<>();
 
-  public static Order create(String producerOrderId,
+  public static Order create(String producerCompanyId,
       String receiverCompanyId,
       AddressVO addressVo,
-      TotalPrice totalPrice,
-      String request) {
-    validateCompanyId(producerOrderId);
+      String request,
+      List<OrderProduct> orderProducts) {
+    validateCompanyId(producerCompanyId);
     validateCompanyId(receiverCompanyId);
+    validateOrderProducts(orderProducts);
 
-    return Order.builder()
-        .producerOrderId(producerOrderId)
-        .receiverCompanyId(receiverCompanyId)
-        .addressVo(addressVo)
-        .totalPrice(totalPrice)
-        .request(request)
-        .build();
+    Order order = new Order();
+    order.producerCompanyId = producerCompanyId;
+    order.receiverCompanyId = receiverCompanyId;
+    order.addressVo = addressVo;
+    order.request = request;
+    order.orderProducts = orderProducts;
+    order.totalPrice = TotalPrice.create(order.calculateTotalPrice());
+
+    return order;
   }
 
-  @Builder(access = AccessLevel.PRIVATE)
-  private Order(String producerOrderId,
-      String receiverCompanyId,
-      AddressVO addressVo,
-      TotalPrice totalPrice,
-      String request) {
-    this.producerCompanyId = producerOrderId;
-    this.receiverCompanyId = receiverCompanyId;
-    this.addressVo = addressVo;
-    this.totalPrice = totalPrice;
-    this.request = request;
+  public void softDelete(UUID deletedBy) {
+    super.softDelete(deletedBy);
+
+    this.orderProducts.forEach(op -> op.delete());
+  }
+
+  private int calculateTotalPrice() {
+    return orderProducts.stream()
+        .reduce(
+            0,
+            (acc, op) -> {
+              int current = Math.multiplyExact(
+                  op.getSnapshot().getUnitPrice(),
+                  op.getSnapshot().getQuantity()
+              );
+              return Math.addExact(acc, current);
+            },
+            Integer::sum
+        );
+  }
+
+  private static void validateOrderProducts(List<OrderProduct> orderProducts) {
+    if (orderProducts == null || orderProducts.isEmpty())
+      throw new BaseException(OrderDomainErrorCode.EMPTY_ORDER_PRODUCT);
   }
 
   private static void validateCompanyId(String companyId) {
