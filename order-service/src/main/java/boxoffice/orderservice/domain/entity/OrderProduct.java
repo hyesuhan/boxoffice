@@ -2,7 +2,7 @@ package boxoffice.orderservice.domain.entity;
 
 import boxoffice.orderservice.domain.vo.ProductSnapShot;
 import boxoffice.orderservice.exception.OrderDomainErrorCode;
-import com.boxoffice.common.entity.BaseEntityNotDeleted;
+import com.boxoffice.common.entity.BaseEntity;
 import com.boxoffice.common.exception.BaseException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_order_products")
-public class OrderProduct extends BaseEntityNotDeleted {
+public class OrderProduct extends BaseEntity {
 
   @Column(name = "order_id", nullable = false)
   private UUID orderId;
@@ -29,8 +29,6 @@ public class OrderProduct extends BaseEntityNotDeleted {
   @Embedded
   private ProductSnapShot snapshot;
 
-  @Column(name = "is_deleted", nullable = false)
-  private boolean isDeleted;
 
   public static OrderProduct create(UUID orderId, String productId, ProductSnapShot snapShot) {
     return OrderProduct.builder()
@@ -45,7 +43,6 @@ public class OrderProduct extends BaseEntityNotDeleted {
     this.orderId = orderId;
     this.productId = productId;
     this.snapshot = snapShot;
-    this.isDeleted = false;
   }
 
   private static void validateProductId(String productId) {

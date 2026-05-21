@@ -82,7 +82,12 @@ public class Order extends BaseEntity {
   public void softDelete(UUID deletedBy) {
     super.softDelete(deletedBy);
 
-    this.orderProducts.forEach(op -> op.delete());
+    this.orderProducts.forEach(op -> op.softDelete(deletedBy));
+  }
+
+  public void updateStatus(OrderStatus newStatus) {
+    validateStatusTransition(this.status, newStatus);
+    this.status = newStatus;
   }
 
   private int calculateTotalPrice() {
@@ -108,5 +113,10 @@ public class Order extends BaseEntity {
   private static void validateCompanyId(String companyId) {
     if (companyId == null || companyId.isBlank())
       throw new BaseException(OrderDomainErrorCode.INVALID_COMPANY_ID);
+  }
+
+  private static void validateStatusTransition(OrderStatus current, OrderStatus newStatus) {
+    if (!current.canTransitionTo(newStatus))
+      throw new BaseException(OrderDomainErrorCode.INVALID_STATUS_TRANSITION);
   }
 }
