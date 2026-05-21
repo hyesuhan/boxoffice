@@ -13,24 +13,24 @@ import lombok.NoArgsConstructor;
 @Getter
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PriceVO {
+public class TotalPrice {
 
   @Column(name = "price", nullable = false)
-  private int value;
+  private Integer value;
 
-  public static PriceVO create(int value) {
+  public static TotalPrice create(Integer value) {
     validate(value);
-    PriceVO price = new PriceVO();
+    TotalPrice price = new TotalPrice();
     price.value = value;
     return price;
   }
 
-  public PriceVO add(PriceVO other) {
-    return PriceVO.create(this.value + other.value);
+  public TotalPrice add(TotalPrice other) {
+    return TotalPrice.create(this.value + other.value);
   }
 
-  private static void validate(int value) {
-    if (value < 0)
+  private static void validate(Integer value) {
+    if (value == null || value < 0)
       throw new BaseException(OrderErrorCode.INVALID_PRICE);
   }
 }

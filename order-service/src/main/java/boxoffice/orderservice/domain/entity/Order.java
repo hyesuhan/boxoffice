@@ -1,7 +1,7 @@
 package boxoffice.orderservice.domain.entity;
 
 import boxoffice.orderservice.domain.enums.OrderStatus;
-import boxoffice.orderservice.domain.vo.PriceVO;
+import boxoffice.orderservice.domain.vo.TotalPrice;
 import boxoffice.orderservice.exception.OrderDomainErrorCode;
 import com.boxoffice.common.entity.AddressVO;
 import com.boxoffice.common.entity.BaseEntity;
@@ -28,7 +28,7 @@ public class Order extends BaseEntity {
   private String receiverCompanyId;
 
   @Embedded
-  private PriceVO totalPrice;
+  private TotalPrice totalPrice;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 30)
@@ -43,7 +43,7 @@ public class Order extends BaseEntity {
   public static Order create(String producerOrderId,
       String receiverCompanyId,
       AddressVO addressVo,
-      PriceVO totalPrice,
+      TotalPrice totalPrice,
       String request) {
     validateCompanyId(producerOrderId);
     validateCompanyId(receiverCompanyId);
@@ -61,7 +61,7 @@ public class Order extends BaseEntity {
   private Order(String producerOrderId,
       String receiverCompanyId,
       AddressVO addressVo,
-      PriceVO totalPrice,
+      TotalPrice totalPrice,
       String request) {
     this.producerCompanyId = producerOrderId;
     this.receiverCompanyId = receiverCompanyId;
