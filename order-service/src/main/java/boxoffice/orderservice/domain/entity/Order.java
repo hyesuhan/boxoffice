@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "p_order")
+@Table(name = "p_orders")
 public class Order extends BaseEntity {
 
   @Column(name = "producer_company_id", nullable = false, columnDefinition = "VARCHAR(36)")
