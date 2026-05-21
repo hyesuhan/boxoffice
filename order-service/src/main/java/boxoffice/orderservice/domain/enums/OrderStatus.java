@@ -15,7 +15,7 @@ public enum OrderStatus {
   public boolean canTransitionTo(OrderStatus next) {
     return switch (this) {
       case PENDING -> next == DELIVERY_REQUESTED || next == CANCELLED;
-      case DELIVERY_REQUESTED -> next == DELIVERING,
+      case DELIVERY_REQUESTED -> next == DELIVERING;
       case DELIVERING -> next == DELIVERED;
       case DELIVERED, CANCELLED -> false;
     };

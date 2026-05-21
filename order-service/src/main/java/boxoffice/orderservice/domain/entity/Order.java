@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,14 +29,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "p_orders")
 public class Order extends BaseEntity {
 
-  @Column(name = "producer_company_id", nullable = false, columnDefinition = "VARCHAR(36)")
-  private String producerCompanyId;
+  @Column(name = "producer_company_id", nullable = false)
+  private UUID producerCompanyId;
 
-  @Column(name = "receiver_company_id", nullable = false, columnDefinition = "VARCHAR(36)")
-  private String receiverCompanyId;
+  @Column(name = "receiver_company_id", nullable = false)
+  private UUID receiverCompanyId;
 
-  @Column(name = "delivery_id", columnDefinition = "VARCHAR(36)")
-  private String deliveryId;
+  @Column(name = "delivery_id")
+  private UUID deliveryId;
 
   @Embedded
   private TotalPrice totalPrice;
@@ -59,8 +58,8 @@ public class Order extends BaseEntity {
   @JoinColumn(name = "order_id", nullable = false)
   private List<OrderProduct> orderProducts = new ArrayList<>();
 
-  public static Order create(String producerCompanyId,
-      String receiverCompanyId,
+  public static Order create(UUID producerCompanyId,
+      UUID receiverCompanyId,
       AddressVO addressVo,
       String request,
       List<OrderProduct> orderProducts) {
@@ -110,8 +109,8 @@ public class Order extends BaseEntity {
       throw new BaseException(OrderDomainErrorCode.EMPTY_ORDER_PRODUCT);
   }
 
-  private static void validateCompanyId(String companyId) {
-    if (companyId == null || companyId.isBlank())
+  private static void validateCompanyId(UUID companyId) {
+    if (companyId == null)
       throw new BaseException(OrderDomainErrorCode.INVALID_COMPANY_ID);
   }
 

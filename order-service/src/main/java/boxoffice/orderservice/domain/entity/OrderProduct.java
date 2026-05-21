@@ -23,14 +23,14 @@ public class OrderProduct extends BaseEntity {
   @Column(name = "order_id", nullable = false)
   private UUID orderId;
 
-  @Column(name = "product_id", nullable = false, columnDefinition = "VARCHAR(36)")
-  private String productId;
+  @Column(name = "product_id", nullable = false)
+  private UUID productId;
 
   @Embedded
   private ProductSnapShot snapshot;
 
 
-  public static OrderProduct create(UUID orderId, String productId, ProductSnapShot snapShot) {
+  public static OrderProduct create(UUID orderId, UUID productId, ProductSnapShot snapShot) {
     return OrderProduct.builder()
         .orderId(orderId)
         .productId(productId)
@@ -39,14 +39,14 @@ public class OrderProduct extends BaseEntity {
   }
 
   @Builder(access = AccessLevel.PRIVATE)
-  private OrderProduct(UUID orderId, String productId, ProductSnapShot snapShot) {
+  private OrderProduct(UUID orderId, UUID productId, ProductSnapShot snapShot) {
     this.orderId = orderId;
     this.productId = productId;
     this.snapshot = snapShot;
   }
 
-  private static void validateProductId(String productId) {
-    if (productId == null || productId.isBlank())
+  private static void validateProductId(UUID productId) {
+    if (productId == null)
       throw new BaseException(OrderDomainErrorCode.INVALID_PRODUCT_ID);
   }
 
