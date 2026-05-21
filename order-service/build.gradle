@@ -11,5 +11,4 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     testImplementation 'com.h2database:h2'
-
 }

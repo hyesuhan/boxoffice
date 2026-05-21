@@ -8,6 +8,7 @@ plugins {
 // include된 모든 하위 도메인 프로젝트에 공통으로 강제 주입할 설정
 subprojects {
 	apply plugin: 'java'
+	apply plugin: 'java-library'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 

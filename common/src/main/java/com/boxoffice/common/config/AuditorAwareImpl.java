@@ -19,7 +19,6 @@ import java.util.UUID;
  *       SecurityContext 방식으로 변경 여부 검토 필요.
  */
 @Slf4j
-@Component
 public class AuditorAwareImpl implements AuditorAware<UUID> {
 
     private static final String USER_ID_HEADER = "X-User-Id";
