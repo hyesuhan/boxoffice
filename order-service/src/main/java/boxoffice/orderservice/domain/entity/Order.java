@@ -6,12 +6,17 @@ import boxoffice.orderservice.exception.OrderDomainErrorCode;
 import com.boxoffice.common.entity.AddressVO;
 import com.boxoffice.common.entity.BaseEntity;
 import com.boxoffice.common.exception.BaseException;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -27,6 +32,9 @@ public class Order extends BaseEntity {
   @Column(name = "receiver_company_id", nullable = false, columnDefinition = "VARCHAR(36)")
   private String receiverCompanyId;
 
+  @Column(name = "delivery_id", columnDefinition = "VARCHAR(36)")
+  private String deliveryId;
+
   @Embedded
   private TotalPrice totalPrice;
 
@@ -39,6 +47,9 @@ public class Order extends BaseEntity {
 
   @Embedded
   private AddressVO addressVo;
+
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<OrderProduct> orderProducts = new ArrayList<>();
 
   public static Order create(String producerOrderId,
       String receiverCompanyId,
