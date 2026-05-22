@@ -2,6 +2,7 @@ package boxoffice.orderservice.domain.vo;
 
 import boxoffice.orderservice.exception.OrderDomainErrorCode;
 import com.boxoffice.common.exception.BaseException;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

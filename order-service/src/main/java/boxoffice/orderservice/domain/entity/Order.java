@@ -35,6 +35,12 @@ public class Order extends BaseEntity {
   @Column(name = "receiver_company_id", nullable = false)
   private UUID receiverCompanyId;
 
+  @Column(name = "orgin_hub_id")
+  private UUID originHubId;
+
+  @Column(name = "destination_hub_id")
+  private UUID destinationHubId;
+
   @Column(name = "delivery_id")
   private UUID deliveryId;
 
@@ -82,6 +88,16 @@ public class Order extends BaseEntity {
     super.softDelete(deletedBy);
 
     this.orderProducts.forEach(op -> op.softDelete(deletedBy));
+  }
+
+  public void assignDelivery(UUID deliveryId, UUID originHubId, UUID destinationHubId) {
+    if (deliveryId == null)
+      throw new BaseException(OrderDomainErrorCode.INVALID_DELIVERY_ID);
+    if (originHubId == null || destinationHubId == null)
+      throw new BaseException(OrderDomainErrorCode.INVALID_DELIVERY_ID);
+    this.deliveryId = deliveryId;
+    this.originHubId = originHubId;
+    this.destinationHubId = destinationHubId;
   }
 
   public void updateStatus(OrderStatus newStatus) {

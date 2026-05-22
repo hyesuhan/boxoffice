@@ -17,3 +17,7 @@ spring:
       redis:
         host: ${REDIS_HOST:sparta-redis}
         port: 6379
+
+app:
+  cache:
+    user-company-ttl: 3600

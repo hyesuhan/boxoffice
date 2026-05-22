@@ -20,9 +20,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "p_order_products")
 public class OrderProduct extends BaseEntity {
 
-  @Column(name = "order_id", nullable = false)
-  private UUID orderId;
-
   @Column(name = "product_id", nullable = false)
   private UUID productId;
 
@@ -30,17 +27,15 @@ public class OrderProduct extends BaseEntity {
   private ProductSnapShot snapshot;
 
 
-  public static OrderProduct create(UUID orderId, UUID productId, ProductSnapShot snapShot) {
+  public static OrderProduct create(UUID productId, ProductSnapShot snapShot) {
     return OrderProduct.builder()
-        .orderId(orderId)
         .productId(productId)
         .snapShot(snapShot)
         .build();
   }
 
   @Builder(access = AccessLevel.PRIVATE)
-  private OrderProduct(UUID orderId, UUID productId, ProductSnapShot snapShot) {
-    this.orderId = orderId;
+  private OrderProduct(UUID productId, ProductSnapShot snapShot) {
     this.productId = productId;
     this.snapshot = snapShot;
   }
