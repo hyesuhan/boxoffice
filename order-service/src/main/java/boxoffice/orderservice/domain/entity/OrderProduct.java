@@ -1,48 +1,49 @@
 package boxoffice.orderservice.domain.entity;
 
-import boxoffice.orderservice.domain.vo.ProductSnapShot;
 import boxoffice.orderservice.exception.OrderDomainErrorCode;
-import com.boxoffice.common.entity.BaseEntity;
 import com.boxoffice.common.exception.BaseException;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.Embeddable;
 import java.util.UUID;
 import lombok.AccessLevel;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Entity
+@Embeddable
+@EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "p_order_products")
-public class OrderProduct extends BaseEntity {
+public class OrderProduct{
 
   @Column(name = "product_id", nullable = false)
   private UUID productId;
 
-  @Embedded
-  private ProductSnapShot snapshot;
+  @Column(name = "product_name", nullable = false)
+  private String productName;
 
+  @Column(name = "unit_price", nullable = false)
+  private Integer unitPrice;
 
-  public static OrderProduct create(UUID productId, ProductSnapShot snapShot) {
-    return OrderProduct.builder()
-        .productId(productId)
-        .snapShot(snapShot)
-        .build();
+  @Column(name = "quantity", nullable = false)
+  private Integer quantity;
+
+  public static OrderProduct create(UUID productId, String productName, Integer unitPrice, Integer quantity) {
+    validate(productId, productName, unitPrice, quantity);
+    return new OrderProduct(productId, productName, unitPrice, quantity);
   }
 
-  @Builder(access = AccessLevel.PRIVATE)
-  private OrderProduct(UUID productId, ProductSnapShot snapShot) {
-    this.productId = productId;
-    this.snapshot = snapShot;
-  }
-
-  private static void validateProductId(UUID productId) {
-    if (productId == null)
+  private static void validate(UUID productId, String productName, Integer unitPrice, Integer quantity) {
+    if (productId == null || productName.isEmpty()) {
       throw new BaseException(OrderDomainErrorCode.INVALID_PRODUCT_ID);
+    }
+    if (unitPrice == null || unitPrice < 0) {
+      throw new BaseException(OrderDomainErrorCode.INVALID_ORDER_PRODUCT);
+    }
+    if (quantity == null || quantity < 0) {
+      throw new BaseException(OrderDomainErrorCode.INVALID_ORDER_PRODUCT);
+    }
   }
-
 }

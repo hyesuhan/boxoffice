@@ -56,7 +56,6 @@ public class OrderOutBox {
     OrderOutBox outBox = new OrderOutBox();
     outBox.aggregateId = aggregateId;
     outBox.eventType = eventType;
-    outBox.eventType = eventType;
     outBox.payload = payload;
     outBox.status = OutBoxStatus.PENDING;
     outBox.createdAt = LocalDateTime.now();

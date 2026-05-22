@@ -6,25 +6,26 @@ import boxoffice.orderservice.exception.OrderDomainErrorCode;
 import com.boxoffice.common.entity.AddressVO;
 import com.boxoffice.common.entity.BaseEntity;
 import com.boxoffice.common.exception.BaseException;
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_orders")
 public class Order extends BaseEntity {
@@ -35,7 +36,7 @@ public class Order extends BaseEntity {
   @Column(name = "receiver_company_id", nullable = false)
   private UUID receiverCompanyId;
 
-  @Column(name = "orgin_hub_id")
+  @Column(name = "origin_hub_id")
   private UUID originHubId;
 
   @Column(name = "destination_hub_id")
@@ -57,15 +58,18 @@ public class Order extends BaseEntity {
   @Embedded
   private AddressVO addressVo;
 
-  @OneToMany(
-      cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-      fetch = FetchType.LAZY
+  @ElementCollection
+  @CollectionTable(
+      name = "p_order_products",
+      joinColumns = @JoinColumn(name = "order_id")
   )
-  @JoinColumn(name = "order_id", nullable = false)
   private List<OrderProduct> orderProducts = new ArrayList<>();
 
-  public static Order create(UUID producerCompanyId,
+  public static Order create(
+      UUID producerCompanyId,
       UUID receiverCompanyId,
+      UUID originHubId,
+      UUID destinationHubId,
       AddressVO addressVo,
       String request,
       List<OrderProduct> orderProducts) {
@@ -76,25 +80,23 @@ public class Order extends BaseEntity {
     Order order = new Order();
     order.producerCompanyId = producerCompanyId;
     order.receiverCompanyId = receiverCompanyId;
+    order.originHubId = originHubId;
+    order.destinationHubId = destinationHubId;
     order.addressVo = addressVo;
     order.request = request;
-    order.orderProducts = orderProducts;
+    order.status = OrderStatus.PENDING;
+    order.orderProducts = new ArrayList<>(orderProducts);
     order.totalPrice = TotalPrice.create(order.calculateTotalPrice());
-
     return order;
   }
 
-  public void softDelete(UUID deletedBy) {
-    super.softDelete(deletedBy);
-
-    this.orderProducts.forEach(op -> op.softDelete(deletedBy));
-  }
-
   public void assignDelivery(UUID deliveryId, UUID originHubId, UUID destinationHubId) {
-    if (deliveryId == null)
+    if (deliveryId == null) {
       throw new BaseException(OrderDomainErrorCode.INVALID_DELIVERY_ID);
-    if (originHubId == null || destinationHubId == null)
+    }
+    if (originHubId == null || destinationHubId == null) {
       throw new BaseException(OrderDomainErrorCode.INVALID_DELIVERY_ID);
+    }
     this.deliveryId = deliveryId;
     this.originHubId = originHubId;
     this.destinationHubId = destinationHubId;
@@ -111,8 +113,8 @@ public class Order extends BaseEntity {
             0,
             (acc, op) -> {
               int current = Math.multiplyExact(
-                  op.getSnapshot().getUnitPrice(),
-                  op.getSnapshot().getQuantity()
+                  op.getUnitPrice(),
+                  op.getQuantity()
               );
               return Math.addExact(acc, current);
             },
