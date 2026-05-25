@@ -1,4 +1,4 @@
-package boxoffice.orderservice.exception;
+package boxoffice.orderservice.infra.exception;
 
 import com.boxoffice.common.exception.ErrorCode;
 import lombok.AllArgsConstructor;

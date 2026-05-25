@@ -1,6 +1,6 @@
 package boxoffice.orderservice.domain.entity;
 
-import boxoffice.orderservice.exception.OrderDomainErrorCode;
+import boxoffice.orderservice.infra.exception.OrderDomainErrorCode;
 import com.boxoffice.common.exception.BaseException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

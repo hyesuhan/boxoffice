@@ -2,7 +2,7 @@ package boxoffice.orderservice.domain.entity;
 
 import boxoffice.orderservice.domain.enums.OrderStatus;
 import boxoffice.orderservice.domain.vo.TotalPrice;
-import boxoffice.orderservice.exception.OrderDomainErrorCode;
+import boxoffice.orderservice.infra.exception.OrderDomainErrorCode;
 import com.boxoffice.common.entity.AddressVO;
 import com.boxoffice.common.entity.BaseEntity;
 import com.boxoffice.common.exception.BaseException;
