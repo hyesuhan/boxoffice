@@ -1,23 +1,24 @@
 package boxoffice.orderservice.domain.enums;
 
+import java.util.Map;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum OrderStatus {
   PENDING("주문 접수"),
-  DELIVERY_REQUESTED("배송 요청"),
-  DELIVERING("배송중"),
-  DELIVERED("배송 완료"),
+  CONFIRMED("배송 요청 완료"),
   CANCELLED("주문 취소");
 
   private final String description;
 
+  private static final Map<OrderStatus, Set<OrderStatus>> ALLOWED_TRANSITIONS = Map.of(
+      PENDING, Set.of(CONFIRMED, CANCELLED),
+      CONFIRMED, Set.of(),
+      CANCELLED, Set.of()
+  );
+
   public boolean canTransitionTo(OrderStatus next) {
-    return switch (this) {
-      case PENDING -> next == DELIVERY_REQUESTED || next == CANCELLED;
-      case DELIVERY_REQUESTED -> next == DELIVERING;
-      case DELIVERING -> next == DELIVERED;
-      case DELIVERED, CANCELLED -> false;
-    };
+    return ALLOWED_TRANSITIONS.getOrDefault(this, Set.of()).contains(next);
   }
 }

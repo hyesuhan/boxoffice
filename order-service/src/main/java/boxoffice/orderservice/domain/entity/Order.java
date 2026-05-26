@@ -55,9 +55,6 @@ public class Order extends BaseEntity {
   @Column(name = "request", length = 100)
   private String request;
 
-  @Embedded
-  private AddressVO addressVo;
-
   @ElementCollection
   @CollectionTable(
       name = "p_order_products",
@@ -70,7 +67,6 @@ public class Order extends BaseEntity {
       UUID receiverCompanyId,
       UUID originHubId,
       UUID destinationHubId,
-      AddressVO addressVo,
       String request,
       List<OrderProduct> orderProducts) {
     validateCompanyId(producerCompanyId);
@@ -82,7 +78,6 @@ public class Order extends BaseEntity {
     order.receiverCompanyId = receiverCompanyId;
     order.originHubId = originHubId;
     order.destinationHubId = destinationHubId;
-    order.addressVo = addressVo;
     order.request = request;
     order.status = OrderStatus.PENDING;
     order.orderProducts = new ArrayList<>(orderProducts);
