@@ -34,4 +34,5 @@ public class AddressVO {
     @Size(max = 255, message = "상세 주소는 255자를 초과할 수 없습니다.")
     @Column(name = "detail_address")
     private String detailAddress;
+
 }

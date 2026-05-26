@@ -1,4 +1,4 @@
-package boxoffice.orderservice.application.client.dto;
+package boxoffice.orderservice.infra.client.dto;
 
 import java.util.UUID;
 

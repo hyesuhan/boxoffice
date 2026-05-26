@@ -36,7 +36,7 @@ public class OrderProduct{
   }
 
   private static void validate(UUID productId, String productName, Integer unitPrice, Integer quantity) {
-    if (productId == null || productName.isEmpty()) {
+    if (productId == null || productName == null || productName.isEmpty()) {
       throw new BaseException(OrderDomainErrorCode.INVALID_PRODUCT_ID);
     }
     if (unitPrice == null || unitPrice < 0) {
